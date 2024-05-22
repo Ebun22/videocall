@@ -5,9 +5,9 @@ import createPeerConnection from '../webrtc Utilities/createPeerConnection';
 import { useNavigate } from 'react-router-dom';
 import clientSocketListeners from '../webrtc Utilities/clientSocketListeners';
 
-const Home = ({callStatus, updateCallStatus, setOfferData, setUserName, userName, setLocalStream, peerConnection, setPeerConnection, setRemoteStream, remoteStream}) => {
+const Home = ({callStatus,typeOfCall, setTypeOfCall, updateCallStatus, setOfferData, setUserName, userName, setLocalStream, peerConnection, setPeerConnection, setRemoteStream, remoteStream}) => {
     const [joined, setJoined] = useState(false);
-    const [typeOfCall, setTypeOfCall] = useState()
+  
     const [availableCall, setAvailableCall] = useState([]);
 
     // useEffect(() => {
@@ -64,6 +64,7 @@ const Home = ({callStatus, updateCallStatus, setOfferData, setUserName, userName
     useEffect(() => {
         if(typeOfCall && peerConnection){
             const socket = socketConnection(userName);
+            console.log("client socketListeners ran")
             clientSocketListeners(socket, callStatus, typeOfCall, updateCallStatus, peerConnection)
         }
     }, [typeOfCall, peerConnection])

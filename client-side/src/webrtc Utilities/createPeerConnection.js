@@ -14,6 +14,7 @@ const createPeerConnection = (userName, typeOfCall) => {
 
         peerConnection.addEventListener('icecandidate', (event) => {
             console.log("This is the iceCandidate event ", event.candidate)
+            console.log("this si the type of calll in answer: ",  typeOfCall)
             if(event.candidate){
                 socket.emit('sendIceCandidateToSignalingServer', {
                     iceCandidate: event.candidate,

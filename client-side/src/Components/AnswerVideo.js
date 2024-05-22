@@ -4,8 +4,9 @@ import ActionButton from './ActionButtons/ActionButton';
 import { useNavigate } from 'react-router-dom';
 import socketConnection from '../webrtc Utilities/socketConnection';
 import VideoMessageBox from "./VideoMessageBox";
+import clientSocketListeners from '../webrtc Utilities/clientSocketListeners';
 
-const AnswerVideo = ({callStatus, updateCallStatus, etVideoMessage, localStream, offerData, userName, setOfferData, peerConnection,remoteStream}) => {
+const AnswerVideo = ({callStatus, updateCallStatus, typeOfCall, setTypeOfCall, localStream, offerData, userName, setOfferData, peerConnection,remoteStream}) => {
     const localFeedEl = useRef(null);
     const remoteFeedEl = useRef(null);
     const [joined, setJoined] = useState(false);
@@ -32,6 +33,13 @@ const AnswerVideo = ({callStatus, updateCallStatus, etVideoMessage, localStream,
         console.log("This is the local stream: ", localStream)
     }, []);
 
+    useEffect(() => {
+        if(answerCreated && peerConnection){
+            const socket = socketConnection(userName);
+            console.log("client socketListeners ran")
+            clientSocketListeners(socket, callStatus, typeOfCall, updateCallStatus, peerConnection)
+        }
+    }, [answerCreated, peerConnection])
 
     //User has enabled video, but not made answer
     useEffect(()=>{
@@ -41,6 +49,7 @@ const AnswerVideo = ({callStatus, updateCallStatus, etVideoMessage, localStream,
             console.log(peerConnection.signalingState) //have remote-offer
             //now that we have the offer set, make our answer
             console.log("Creating answer...")
+            
             const answer = await peerConnection.createAnswer()
             peerConnection.setLocalDescription(answer)
             const copyOfferData = {...offerData}

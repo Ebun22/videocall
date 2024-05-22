@@ -23,6 +23,7 @@ function App() {
   const [ peerConnection, setPeerConnection ] = useState(null)
   const [ userName, setUserName ] = useState('')
   const [ offerData, setOfferData ] = useState(null)
+  const [typeOfCall, setTypeOfCall] = useState()
 
   return (
    <BrowserRouter>
@@ -41,6 +42,8 @@ function App() {
             setUserName={setUserName}
             offerData={offerData}
             setOfferData={setOfferData}
+            typeOfCall={typeOfCall}
+            setTypeOfCall={setTypeOfCall}
           />
         }/>
          <Route exact path='/offer' element={
@@ -57,6 +60,8 @@ function App() {
             setUserName={setUserName}
             offerData={offerData}
             setOfferData={setOfferData}
+            typeOfCall={typeOfCall}
+            setTypeOfCall={setTypeOfCall}
           />
         }/>
          <Route exact path='/answer' element={
@@ -73,6 +78,8 @@ function App() {
             setUserName={setUserName}
             offerData={offerData}
             setOfferData={setOfferData}
+            typeOfCall={typeOfCall}
+            setTypeOfCall={setTypeOfCall}
           />
         }/>
       </Routes>

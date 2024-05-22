@@ -1,29 +1,31 @@
 
 const fs = require('fs');
-const https = require('https')
+const http = require('http')
+const path = require('path')
 const express = require('express');
 const app = express();
 const socketio = require('socket.io');
-app.use(express.static(__dirname))
-
+// app.use(express.static(__dirname))
+app.use(express.static(path.join(__dirname)))
 ////**MAJOR CHANGE**////
 
 //we need a key and cert to run https
 //we generated them with mkcert
 // $ mkcert create-ca
 // $ mkcert create-cert
-const key = fs.readFileSync('./.cert/create-cert-key.pem');
-const cert = fs.readFileSync('./.cert/create-cert.pem');
+// const key = fs.readFileSync('./.cert/create-cert-key.pem');
+// const cert = fs.readFileSync('./.cert/create-cert.pem');
 
 //we changed our express setup so we can use https
 //pass the key and cert to createServer on https
-const expressServer = https.createServer({key, cert}, app);
+const expressServer = http.createServer(app);
 
 // const expressServer = http.createServer(app);
 //create our socket.io server... it will listen to our express port
 const io = socketio(expressServer,{
     cors: [
-        "http://localhost:3000"
+        "http://localhost:3000",
+        "https://localhost:3000"
     ],
     method: [
         'GET',
@@ -138,11 +140,17 @@ io.on('connection',(socket)=>{
         }else{
             //this ice is coming from the answerer. Send to the offerer
             //pass it through to the other socket
+            //console.log("These are offers if type of calll is answer: ", offers)
             const offerInOffers = offers.find(o=>o.answererUserName === iceUserName);
-            console.log("This si offer: ", offerInOffers)
-            const socketToSendTo = connectedSockets.find(s=>s.userName === offerInOffers.offererUserName);
+            //console.log("This si offer: ", offerInOffers)
+            let socketToSendTo
+            if(offerInOffers){
+                socketToSendTo = connectedSockets.find(s=>s.userName == iceUserName)
+                console.log("Offer found", socketToSendTo)
+            };
             if(socketToSendTo){
                 socket.to(socketToSendTo.socketId).emit('receivedIceCandidateFromServer',iceCandidate)
+                console.log("This si the icecandidate sent: ", iceCandidate)
             }else{
                 console.log("Ice candidate recieved but could not find offerer")
             }

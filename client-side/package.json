@@ -17,8 +17,8 @@
     "yarn": "^1.22.22"
   },
   "scripts": {
-    "start": "HTTPS=true SSL_CRT_FILE=./.cert/create-cert.pem SSL_KEY_FILE=./.cert/create-cert-key.pem react-scripts start",
-    "build": "HTTPS=true SSL_CRT_FILE=./.cert/create-cert.pem SSL_KEY_FILE=./.cert/create-cert-key.pem react-scripts build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
