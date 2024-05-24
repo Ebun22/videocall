@@ -7,7 +7,7 @@ const socketConnection = (userName) => {
         console.log("socket connection already exits: ", socket.connected)
         return socket;
     }else {
-        const socket = io('http://localhost:8000', {
+        socket = io('http://localhost:8001', {
             auth: {
                 userName
             }

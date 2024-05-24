@@ -8,7 +8,7 @@ const prepForCall = async (callStatus, updateCallStatus, setLocalStream) => {
         const copyCallStatus = {...callStatus};
         copyCallStatus.hasMedia = true;
         copyCallStatus.videoEnabled = null;
-        copyCallStatus.AudioEnabled = false;
+        copyCallStatus.audioEnabled = null;
         updateCallStatus(copyCallStatus);
         setLocalStream(stream);
     }catch(err){

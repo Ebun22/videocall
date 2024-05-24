@@ -6,7 +6,7 @@ import socketConnection from '../webrtc Utilities/socketConnection';
 import VideoMessageBox from "./VideoMessageBox";
 import clientSocketListeners from '../webrtc Utilities/clientSocketListeners';
 
-const AnswerVideo = ({callStatus, updateCallStatus, typeOfCall, setTypeOfCall, localStream, offerData, userName, setOfferData, peerConnection,remoteStream}) => {
+const AnswerVideo = ({callStatus, updateCallStatus,setHangUp, hangUp, localStream, offerData, userName, setOfferData, peerConnection,remoteStream}) => {
     const localFeedEl = useRef(null);
     const remoteFeedEl = useRef(null);
     const [joined, setJoined] = useState(false);
@@ -20,26 +20,20 @@ const AnswerVideo = ({callStatus, updateCallStatus, typeOfCall, setTypeOfCall, l
             navigate('/')
         }
         console.log("This is the callStatus on the answerer side: ", callStatus)
-        // if(callStatus.videoEnabled){
-            localFeedEl.current.srcObject = localStream;
-        // }
-        // remoteStream.getTracks().forEach(track => {
-        //     track.enabled = true;
-        //     remoteStream.addTrack(track, remoteStream)
-        // })
-        // if( remoteStream) 
-        remoteFeedEl.current.srcObject = remoteStream;
-        console.log("This is the remote stream: ", remoteStream)
-        console.log("This is the local stream: ", localStream)
+
+        if(!callStatus.current){
+            //set video tags
+            remoteFeedEl.current.srcObject = remoteStream
+        }
     }, []);
 
-    useEffect(() => {
-        if(answerCreated && peerConnection){
-            const socket = socketConnection(userName);
-            console.log("client socketListeners ran")
-            clientSocketListeners(socket, callStatus, typeOfCall, updateCallStatus, peerConnection)
+    useEffect(()=>{
+        if(callStatus.videoEnabled == true && !callStatus.current){
+            localFeedEl.current.srcObject = localStream            
         }
-    }, [answerCreated, peerConnection])
+      
+    },[callStatus])
+
 
     //User has enabled video, but not made answer
     useEffect(()=>{
@@ -62,27 +56,13 @@ const AnswerVideo = ({callStatus, updateCallStatus, typeOfCall, setTypeOfCall, l
                 peerConnection.addIceCandidate(c)
                 console.log("==Added ice candidate from offerer==")
             })
+            setAnswerCreated(true)
         }
 
-        if(!answerCreated && callStatus.videoEnabled){
+        if(!answerCreated && callStatus.videoEnabled && !callStatus.current ){
             addOfferAndCreateAnswerAsync()
         }
     },[callStatus.videoEnabled,answerCreated])
-    
-
-    //if we have tracks, disable the video message
-    useEffect(()=>{
-        if(peerConnection){
-            peerConnection.ontrack = e=>{
-                if(e?.streams?.length){
-                    setVideoMessage("")
-                }else{
-                    setVideoMessage("Disconnected...")
-                }
-            }
-        }
-    },[peerConnection])
-
 
     return(
         <div class='flex w-screen h-screen flex-col'>
@@ -92,10 +72,15 @@ const AnswerVideo = ({callStatus, updateCallStatus, typeOfCall, setTypeOfCall, l
                 <video id="remote-feed" ref={remoteFeedEl} autoPlay playsInline muted class='w-full  bg-black '></video> 
              </div>
              <ActionButton
-                localFeedEl={localFeedEl}
-                remoteFeedEl={remoteFeedEl}
+               hangUp={hangUp}
+               setHangUp={setHangUp}
+               localFeedEl={localFeedEl}
+               remoteFeedEl={remoteFeedEl}
+               userName={userName}
                 callStatus={callStatus}
                 localStream={localStream}
+                remoteStream={remoteStream}
+                offerData={offerData}
                 updateCallStatus={updateCallStatus}
                 peerConnection={peerConnection}
               />

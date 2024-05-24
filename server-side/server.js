@@ -4,6 +4,7 @@ const http = require('http')
 const path = require('path')
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const socketio = require('socket.io');
 // app.use(express.static(__dirname))
 app.use(express.static(path.join(__dirname)))
@@ -19,7 +20,16 @@ app.use(express.static(path.join(__dirname)))
 //we changed our express setup so we can use https
 //pass the key and cert to createServer on https
 const expressServer = http.createServer(app);
-
+app.use(cors({
+    cors: [
+        "http://localhost:3000",
+        "https://localhost:3000"
+    ],
+    method: [
+        'GET',
+        'POST'
+    ]
+}));
 // const expressServer = http.createServer(app);
 //create our socket.io server... it will listen to our express port
 const io = socketio(expressServer,{
@@ -34,7 +44,7 @@ const io = socketio(expressServer,{
 });
 
 
-expressServer.listen(8000);
+expressServer.listen(8001);
 
 //offers will contain {}
 const offers = [
@@ -150,7 +160,7 @@ io.on('connection',(socket)=>{
             };
             if(socketToSendTo){
                 socket.to(socketToSendTo.socketId).emit('receivedIceCandidateFromServer',iceCandidate)
-                console.log("This si the icecandidate sent: ", iceCandidate)
+                console.log("This is the icecandidate sent: ", iceCandidate)
             }else{
                 console.log("Ice candidate recieved but could not find offerer")
             }
@@ -158,9 +168,10 @@ io.on('connection',(socket)=>{
         // console.log(offers)
     })
 
-    // socket.on('disconnect',()=>{
-    //     const offerToClear = offers.findIndex(o=>o.offererUserName === userName)
-    //     offers.splice(offerToClear,1)
-    //     socket.emit('availableOffers',offers);
-    // })
+    socket.on('disconnect',()=>{
+        const offerToClear = offers.findIndex(o=>o.offererUserName === userName)
+        console.log("Connection has ended: ", offerToClear)
+        offers.splice(offerToClear,1)
+        socket.emit('availableOffers',offers);
+    })
 })

@@ -7,7 +7,6 @@ import clientSocketListeners from '../webrtc Utilities/clientSocketListeners';
 
 const Home = ({callStatus,typeOfCall, setTypeOfCall, updateCallStatus, setOfferData, setUserName, userName, setLocalStream, peerConnection, setPeerConnection, setRemoteStream, remoteStream}) => {
     const [joined, setJoined] = useState(false);
-  
     const [availableCall, setAvailableCall] = useState([]);
 
     // useEffect(() => {
@@ -71,7 +70,7 @@ const Home = ({callStatus,typeOfCall, setTypeOfCall, updateCallStatus, setOfferD
 
     //navigate to the videocall page when peerConnection is made
     useEffect(() => {
-        if(remoteStream, peerConnection){
+        if(remoteStream && peerConnection && !callStatus.current){
             navigate(`/${typeOfCall}`)
         }
     }, [remoteStream, peerConnection]);

@@ -1,10 +1,12 @@
 import { IoIosCall } from "react-icons/io";
 
-const HangupButton = () => {
+const HangupButton = ({hangUp, setHangUp, offerData}) => {
+
+
     return (
-        <div class='w-full h-full'>
+        
             <IoIosCall class='text-red-500 ' />
-        </div>
+   
     )
 };
 

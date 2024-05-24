@@ -24,6 +24,7 @@ function App() {
   const [ userName, setUserName ] = useState('')
   const [ offerData, setOfferData ] = useState(null)
   const [typeOfCall, setTypeOfCall] = useState()
+  const [hangUp, setHangUp] = useState(false)
 
   return (
    <BrowserRouter>
@@ -62,10 +63,14 @@ function App() {
             setOfferData={setOfferData}
             typeOfCall={typeOfCall}
             setTypeOfCall={setTypeOfCall}
+            hangUp={hangUp}
+            setHangUp={setHangUp}
           />
         }/>
          <Route exact path='/answer' element={
           <AnswerVideo 
+          hangUp={hangUp}
+          setHangUp={setHangUp}
             callStatus={callStatus}
             updateCallStatus={updateCallStatus}
             localStream={localStream}

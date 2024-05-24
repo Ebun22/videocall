@@ -5,8 +5,10 @@ const clientSocketListeners = (socket,typeOfCall,callStatus,
         console.log("======From inside clientSocketListeners======", entireOfferObj);
         const copyCallStatus = {...callStatus}
         copyCallStatus.answer = entireOfferObj.answer
+        copyCallStatus.answerUserName = entireOfferObj.answererUserName 
         copyCallStatus.myRole = typeOfCall
         updateCallStatus(copyCallStatus)
+        // setOfferData(entireOfferObj)
     })
 
     socket.on('receivedIceCandidateFromServer',iceC=>{
