@@ -168,6 +168,31 @@ io.on('connection',(socket)=>{
         // console.log(offers)
     })
 
+    //recieve chat sent from client1 ans send to client 2
+    socket.on('sendChat', (msg) => {
+        if(msg.to){
+            const user = connectedSockets.find(u => u.userName === msg.to);
+            if(user){
+                socket.to(user.socketId).emit('recieveMessage', {
+                    from: msg.from,
+                    chat: msg.msg,
+                    to: msg.to
+                })
+            }
+            return;
+        }else {
+            const user = connectedSockets[connectedSockets.length - 2];
+            if(user){
+                socket.to(user.socketId).emit('recieveMessage', {
+                    from: msg.from,
+                    chat: msg.msg,
+                    to: user.userName
+                })
+            }
+            return;
+        }
+    });
+
     socket.on('disconnect',()=>{
         const offerToClear = offers.findIndex(o=>o.offererUserName === userName)
         console.log("Connection has ended: ", offerToClear)

@@ -5,7 +5,7 @@ import createPeerConnection from '../webrtc Utilities/createPeerConnection';
 import { useNavigate } from 'react-router-dom';
 import clientSocketListeners from '../webrtc Utilities/clientSocketListeners';
 
-const Home = ({callStatus,typeOfCall, setTypeOfCall, updateCallStatus, setOfferData, setUserName, userName, setLocalStream, peerConnection, setPeerConnection, setRemoteStream, remoteStream}) => {
+const Home = ({callStatus,typeOfCall, setTypeOfCall, originalStream, updateCallStatus, setOfferData, setUserName, userName, localStream, setLocalStream, peerConnection, setPeerConnection, setRemoteStream, remoteStream}) => {
     const [joined, setJoined] = useState(false);
     const [availableCall, setAvailableCall] = useState([]);
 
@@ -21,7 +21,7 @@ const Home = ({callStatus,typeOfCall, setTypeOfCall, updateCallStatus, setOfferD
 
     const initCall = async (typeOfCall) => {
         //get localstream ready and get userMedia
-        await prepForCall(callStatus, updateCallStatus, setLocalStream)
+        await prepForCall(callStatus, updateCallStatus, setLocalStream, localStream, originalStream)
         
         setTypeOfCall(typeOfCall);
     };
@@ -63,7 +63,6 @@ const Home = ({callStatus,typeOfCall, setTypeOfCall, updateCallStatus, setOfferD
     useEffect(() => {
         if(typeOfCall && peerConnection){
             const socket = socketConnection(userName);
-            console.log("client socketListeners ran")
             clientSocketListeners(socket, callStatus, typeOfCall, updateCallStatus, peerConnection)
         }
     }, [typeOfCall, peerConnection])

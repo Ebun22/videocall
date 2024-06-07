@@ -7,11 +7,10 @@ const AudioButton = ({callStatus,localStream,updateCallStatus,peerConnection}) =
    let audioStream
 
     useEffect(() => {
-        const getAudioTracks = async () => {
+        const getAudioTrack = async () => {
             try{
                 if(localStream && (callStatus.audioEnabled==null)){
                     audioStream = await navigator.mediaDevices.getUserMedia({audio: true});
-                    console.log("audio Stream created: ", audioStream)
                     const copyCallStatus = {...callStatus}
                     copyCallStatus.audioEnabled = false
                     updateCallStatus(copyCallStatus)
@@ -21,21 +20,18 @@ const AudioButton = ({callStatus,localStream,updateCallStatus,peerConnection}) =
                         localStream.addTrack(track)
                         track.enabled = false
                     });
-                    console.log("audio has been added to localStream: ", localStream)
-    
                 }
             }catch(err){
                 console.log(err)
             }
         };
 
-        getAudioTracks();
+        getAudioTrack();
 
         return () => {
             // Cleanup: stop audio tracks if component unmounts
             if (audioStream) {
                 audioStream.getTracks().forEach(track => track.stop());
-                console.log("Audio comp has been unmounted: ", audioStream)
             }
         };
         
@@ -60,7 +56,7 @@ const AudioButton = ({callStatus,localStream,updateCallStatus,peerConnection}) =
     };
  
     return (
-        <button onClick={startStopAudio}>
+        <button className='h-full w-full' onClick={startStopAudio}>
             {callStatus.audioEnabled ? <FaMicrophone /> : <FaMicrophoneSlash />}
         </button>
       

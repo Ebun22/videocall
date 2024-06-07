@@ -12,12 +12,14 @@ const startStopVideo = ()=>{
         // 1. Video is enabled, so we need to disable
         //disable
         copyCallStatus.videoEnabled = false
+        console.log("This si the VideoCall status: ", copyCallStatus.videoEnabled )
         updateCallStatus(copyCallStatus)
         const tracks = localStream.getVideoTracks()
         tracks.forEach(track=>track.enabled = false)
     }else if(copyCallStatus.videoEnabled === false){
         // 2. Video is disabled, so we need to enable
         copyCallStatus.videoEnabled = true
+        console.log("This si the VideoCall status: ", copyCallStatus.videoEnabled )
         updateCallStatus(copyCallStatus)
         const tracks = localStream.getVideoTracks()
         tracks.forEach(track=>track.enabled = true)
@@ -25,6 +27,7 @@ const startStopVideo = ()=>{
         // 3. Video is null, so we need to init
         console.log("Init video!")
         copyCallStatus.videoEnabled = true
+        console.log("This is the VideoCall status: ", copyCallStatus.videoEnabled )
         updateCallStatus(copyCallStatus)
         // we are not adding tracks so they are visible 
         // in the video tag. We are addign them
@@ -37,7 +40,7 @@ const startStopVideo = ()=>{
 
 
     return (
-        <button onClick={startStopVideo}>
+        <button className='h-full w-full' onClick={startStopVideo}>
             {callStatus.videoEnabled ? <IoMdVideocam /> : <IoVideocamOff />}
         </button>
     )

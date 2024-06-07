@@ -1,4 +1,4 @@
-const prepForCall = async (callStatus, updateCallStatus, setLocalStream) => {
+const prepForCall = async (callStatus, updateCallStatus, setLocalStream, localStream, originalStream) => {
     const constraints = {
         video: true,
         audio: false
@@ -10,7 +10,10 @@ const prepForCall = async (callStatus, updateCallStatus, setLocalStream) => {
         copyCallStatus.videoEnabled = null;
         copyCallStatus.audioEnabled = null;
         updateCallStatus(copyCallStatus);
+        originalStream.current = stream
+       
         setLocalStream(stream);
+        console.log("local stream is gotten from users Camera: ", localStream)
     }catch(err){
         console.log(err)
     }

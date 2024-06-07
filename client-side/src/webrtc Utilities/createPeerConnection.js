@@ -30,7 +30,7 @@ const createPeerConnection = (userName, typeOfCall) => {
         });
 
         peerConnection.addEventListener('iceconnectionstatechange', (event) => {
-            console.log("this connection has been disconncted: ", event);
+            console.log("Current iceconnection state: ", event.target.connectionState);
             if(peerConnection.iceConnectionState === "disconnected"){
                console.log("this connection has been disconncted: ", peerConnection.iceConnectionState);
                peerConnection.ontrack = null;
@@ -38,7 +38,6 @@ const createPeerConnection = (userName, typeOfCall) => {
                     remoteStream.removeTrack(track,remoteStream)
                })
                remoteStream = null
-               console.log("This is the remote Stream: ", remoteStream)
            }
         });
 

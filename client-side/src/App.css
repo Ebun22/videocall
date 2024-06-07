@@ -4,6 +4,7 @@
 
 .App {
   text-align: center;
+  overflow: hidden;
 }
 
 .App-logo {
@@ -31,6 +32,27 @@
 .App-link {
   color: #61dafb;
 }
+/* Custom CSS for chat box animation */
+.chat-container {
+  position: relative;
+}
+
+.chat-container.open-chat {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.ChatBox {
+  transform: translateX(100%);
+  opacity: 0;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.ChatBox.open-chat {
+  transform: translateX(0);
+  opacity: 1;
+}
+
 
 @keyframes App-logo-spin {
   from {

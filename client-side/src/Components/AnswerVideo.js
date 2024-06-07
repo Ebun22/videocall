@@ -3,15 +3,17 @@ import { useState , useEffect, useRef} from 'react';
 import ActionButton from './ActionButtons/ActionButton';
 import { useNavigate } from 'react-router-dom';
 import socketConnection from '../webrtc Utilities/socketConnection';
-import VideoMessageBox from "./VideoMessageBox";
 import clientSocketListeners from '../webrtc Utilities/clientSocketListeners';
+import ChatButton from './ChatBoxComponents/ChatButton';
+import ChatBox from './ChatBoxComponents/ChatBox';
 
-const AnswerVideo = ({callStatus, updateCallStatus,setHangUp, hangUp, localStream, offerData, userName, setOfferData, peerConnection,remoteStream}) => {
+const AnswerVideo = ({callStatus, updateCallStatus, setHangUp, hangUp, userName, localStream, setLocalStream, offerData, peerConnection,remoteStream, originalStream}) => {
     const localFeedEl = useRef(null);
     const remoteFeedEl = useRef(null);
     const [joined, setJoined] = useState(false);
-    const [ videoMessage, setVideoMessage ] = useState("Please enable video to start!")
+    const [videoMessage,setVideoMessage] = useState("Please enable video to start!")
     const [answerCreated, setAnswerCreated] = useState(false);
+    const [openChat, setOpenChat] = useState(false);
 
     const navigate = useNavigate()
 
@@ -33,6 +35,14 @@ const AnswerVideo = ({callStatus, updateCallStatus,setHangUp, hangUp, localStrea
         }
       
     },[callStatus])
+
+    useEffect(()=>{
+        if(!callStatus.current){
+            //set video tags
+            console.log('new remote stream was set')
+            remoteFeedEl.current.srcObject = remoteStream
+        }
+    },[remoteStream])
 
 
     //User has enabled video, but not made answer
@@ -66,26 +76,45 @@ const AnswerVideo = ({callStatus, updateCallStatus,setHangUp, hangUp, localStrea
 
     return(
         <div class='flex w-screen h-screen flex-col'>
-            <div class='w-full h-screen bg-black flex flex-row'>
-                {/* <VideoMessageBox message={videoMessage} /> */}
-                <video id="local-feed" ref={localFeedEl} autoPlay playsInline muted class='w-full  bg-black '></video>
-                <video id="remote-feed" ref={remoteFeedEl} autoPlay playsInline muted class='w-full  bg-black '></video> 
-             </div>
-             <ActionButton
-               hangUp={hangUp}
-               setHangUp={setHangUp}
-               localFeedEl={localFeedEl}
-               remoteFeedEl={remoteFeedEl}
-               userName={userName}
-                callStatus={callStatus}
-                localStream={localStream}
-                remoteStream={remoteStream}
-                offerData={offerData}
-                updateCallStatus={updateCallStatus}
-                peerConnection={peerConnection}
-              />
-        </div>
-     
+            <div class='top flex w-screen h-screen flex-row'>
+                <div class='left-half '>
+                    <div class='w-full h-screen bg-black flex flex-row'>
+                        <video id="local-feed" ref={localFeedEl} autoPlay playsInline class='w-1/2'></video>
+                        <video id="remote-feed" ref={remoteFeedEl} autoPlay playsInline class='w-1/2'></video> 
+                    </div>
+                </div>
+                <div class='right-side absolute right-0'>
+                    <ChatButton 
+                    openChat={openChat}
+                    setOpenChat={setOpenChat}
+                    />
+                </div>
+                <div className={`chat-container ${openChat ? 'open-chat' : ''}`}>
+                    <ChatBox 
+                    callStatus={callStatus}
+                    openChat={openChat}
+                    setOpenChat={setOpenChat}
+                    userName={userName}
+                    />
+                </div>
+            </div>
+            <div class='bottom justify-center  flex w-screen h-screen '>
+            <ActionButton
+                    hangUp={hangUp}
+                    setHangUp={setHangUp}
+                    userName={userName}
+                    localFeedEl={localFeedEl}
+                    remoteFeedEl={remoteFeedEl}
+                    callStatus={callStatus}
+                    originalStream={originalStream}
+                    updateCallStatus={updateCallStatus}
+                    peerConnection={peerConnection}
+                    localStream={localStream}
+                    setLocalStream={setLocalStream}
+                    remoteStream={remoteStream}
+                />
+            </div>
+        </div> 
     )
 
 };

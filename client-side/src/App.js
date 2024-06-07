@@ -1,6 +1,6 @@
 
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import Home from './Components/Home';
 import CallerVideo from './Components/CallerVideo';
@@ -25,6 +25,7 @@ function App() {
   const [ offerData, setOfferData ] = useState(null)
   const [typeOfCall, setTypeOfCall] = useState()
   const [hangUp, setHangUp] = useState(false)
+  const originalStream = useRef(null);
 
   return (
    <BrowserRouter>
@@ -40,6 +41,7 @@ function App() {
             peerConnection={peerConnection}
             setPeerConnection ={setPeerConnection}
             userName={userName} 
+            originalStream={originalStream}
             setUserName={setUserName}
             offerData={offerData}
             setOfferData={setOfferData}
@@ -56,6 +58,7 @@ function App() {
             remoteStream={remoteStream}
             setRemoteStream={setRemoteStream}
             peerConnection={peerConnection}
+            originalStream={originalStream}
             setPeerConnection ={setPeerConnection}
             userName={userName} 
             setUserName={setUserName}
@@ -78,6 +81,7 @@ function App() {
             remoteStream={remoteStream}
             setRemoteStream={setRemoteStream}
             peerConnection={peerConnection}
+            originalStream={originalStream}
             setPeerConnection ={setPeerConnection}
             userName={userName} 
             setUserName={setUserName}
